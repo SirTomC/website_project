@@ -1,9 +1,9 @@
-import { createBrowserClient } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js';      // ✅ use createClient (browser)
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 
 export function createClientBrowser() {
-  return createBrowserClient(
+  return createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
@@ -11,7 +11,6 @@ export function createClientBrowser() {
 
 export function createClientServer() {
   const cookieStore = cookies();
-
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
