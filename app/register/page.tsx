@@ -14,7 +14,6 @@ export default function RegisterPage() {
       alert("Passwords do not match.");
       return;
     }
-    // Frontend-only for now:
     console.log("REGISTER submit", { email, password });
     alert(`Register pressed for ${email} (no backend yet)`);
   }
