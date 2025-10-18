@@ -6,6 +6,6 @@ export async function POST(req: Request) {
   if (!email || !password) {
     return NextResponse.json({ error: "Email & password required" }, { status: 400 });
   }
-  setSession(email);
+  await setSession(email);
   return NextResponse.json({ ok: true });
 }
