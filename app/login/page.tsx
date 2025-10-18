@@ -10,28 +10,30 @@ export default function LoginPage() {
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
+  
   async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setErr(null);
-    setLoading(true);
-    try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || "Login failed");
-      }
-      router.push("/"); // go home (now "logged in" via cookie)
-    } catch (e: any) {
-      setErr(e.message);
-    } finally {
-      setLoading(false);
+  e.preventDefault();
+  setErr(null);
+  setLoading(true);
+  try {
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.error || "Login failed");
     }
+    router.push("/");
+    router.refresh();
+  } catch (err: any) {
+    setErr(err.message);
+  } finally {
+    setLoading(false);
   }
+}
+
 
   return (
     <div className="min-h-screen grid place-items-center p-6">
