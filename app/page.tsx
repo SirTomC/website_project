@@ -6,7 +6,7 @@ export default function Home() {
     <div className="min-h-screen grid grid-rows-[auto_1fr_auto] p-8 gap-8">
       <header className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Image src="/flower.svg" alt="Logo" width={120} height={24} className="dark:invert" />
+          <Image src="/flower.svg" alt="Logo" width={120} height={24} className="dark:invert mt-3" />
         </div>
         <nav className="flex gap-3">
           <Link href="/login" className="border px-4 py-2 rounded hover:bg-black/5 dark:hover:bg-white/10">
