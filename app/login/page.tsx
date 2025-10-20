@@ -5,34 +5,34 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [err, setErr] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [err, setErr] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
+    const router = useRouter();
   
-  async function onSubmit(e: React.FormEvent) {
-  e.preventDefault();
-  setErr(null);
-  setLoading(true);
-  try {
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-    if (!res.ok) {
-      const data = await res.json().catch(() => ({}));
-      throw new Error(data.error || "Login failed");
+    async function onSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setErr(null);
+    setLoading(true);
+    try {
+        const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+        });
+        if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "Login failed");
+        }
+        router.push("/");
+        router.refresh();
+    } catch (err: any) {
+        setErr(err.message);
+    } finally {
+        setLoading(false);
+        }
     }
-    router.push("/");
-    router.refresh();
-  } catch (err: any) {
-    setErr(err.message);
-  } finally {
-    setLoading(false);
-  }
-}
 
 
   return (
