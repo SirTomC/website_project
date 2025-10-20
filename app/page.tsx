@@ -18,9 +18,7 @@ export default async function Home() {
             <>
               <span className="opacity-70">Signed in as <b>{session.email}</b></span>
               <form action="/api/auth/logout" method="post">
-                <button className="border px-4 py-2 rounded hover:bg-black/5 dark:hover:bg-white/10">
-                  Sign out
-                </button>
+                <button className="border px-4 py-2 rounded hover:bg-black/5 dark:hover:bg-white/10">Sign out</button>
               </form>
             </>
           ) : (
@@ -34,13 +32,8 @@ export default async function Home() {
 
       <main className="row-start-2 flex flex-col items-center gap-6 text-center">
         <h1 className="text-3xl font-semibold tracking-tight">Welcome</h1>
-
         {!session ? (
-          <>
-            <p className="opacity-70 max-w-prose">
-              Please <b>Login</b> or <b>Register</b> to start chatting.
-            </p>
-          </>
+          <p className="opacity-70 max-w-prose">Please <b>Login</b> or <b>Register</b> to start chatting.</p>
         ) : (
           <>
             <p className="opacity-70">You’re signed in. Chat below 👇</p>
@@ -49,9 +42,7 @@ export default async function Home() {
         )}
       </main>
 
-      <footer className="row-start-3 text-center opacity-60 text-sm">
-        © {new Date().getFullYear()} My Website
-      </footer>
+      <footer className="row-start-3 text-center opacity-60 text-sm">© {new Date().getFullYear()} My Website</footer>
     </div>
   );
 }

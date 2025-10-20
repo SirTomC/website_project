@@ -16,10 +16,7 @@ export default function ChatPanel() {
       const list = await fetch("/api/conversations", { cache: "no-store" });
       if (list.ok) {
         const convos: Convo[] = await list.json();
-        if (convos.length > 0) {
-          setConversationId(convos[0].id);
-          return;
-        }
+        if (convos.length > 0) { setConversationId(convos[0].id); return; }
       }
       const create = await fetch("/api/conversations", { method: "POST" });
       if (create.ok) {
@@ -40,13 +37,12 @@ export default function ChatPanel() {
   async function send() {
     if (!text.trim() || !conversationId) return;
     setLoading(true);
-    const body = { conversationId, content: text };
-    setText("");
     await fetch("/api/messages", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
+      body: JSON.stringify({ conversationId, content: text }),
     });
+    setText("");
     const res = await fetch(`/api/messages?conversationId=${conversationId}`, { cache: "no-store" });
     if (res.ok) setMessages(await res.json());
     setLoading(false);
@@ -63,9 +59,7 @@ export default function ChatPanel() {
             </div>
           </div>
         ))}
-        {messages.length === 0 && (
-          <p className="opacity-60 text-center">Start the conversation…</p>
-        )}
+        {messages.length === 0 && <p className="opacity-60 text-center">Start the conversation…</p>}
       </div>
 
       <div className="flex gap-2">
@@ -76,11 +70,7 @@ export default function ChatPanel() {
           onChange={e => setText(e.target.value)}
           onKeyDown={e => (e.key === "Enter" ? send() : null)}
         />
-        <button
-          className="border rounded px-4 disabled:opacity-50"
-          onClick={send}
-          disabled={loading || !conversationId}
-        >
+        <button className="border rounded px-4 disabled:opacity-50" onClick={send} disabled={loading || !conversationId}>
           {loading ? "Sending…" : "Send"}
         </button>
       </div>
