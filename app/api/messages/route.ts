@@ -60,7 +60,7 @@ export async function POST(req: Request) {
 
   let reply = "(no response)";
   try {
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API!);
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }); // or "gemini-1.5-pro"
     const result = await model.generateContent({ contents });
     reply = result.response.text().trim() || "(empty response)";
