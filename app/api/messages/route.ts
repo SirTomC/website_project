@@ -49,36 +49,35 @@ export async function POST(req: Request) {
     data: { conversationId, role: "user", content: String(content) },
   });
 
-const history = await prisma.message.findMany({
-  where: { conversationId },
-  orderBy: { createdAt: "asc" },
-  select: { role: true, content: true },
-  take: 12,
-});
+  const history = await prisma.message.findMany({
+    where: { conversationId },
+    orderBy: { createdAt: "asc" },
+    select: { role: true, content: true },
+    take: 12,
+  });
 
-// types to keep Next build happy
-type HistoryRow = { role: string; content: string };
-type GeminiContent = { role: "user" | "model"; parts: { text: string }[] };
+  type HistoryRow = { role: string; content: string };
+  type GeminiContent = { role: "user" | "model"; parts: { text: string }[] };
 
-const toGeminiRole = (r: string): "user" | "model" =>
-  r === "assistant" ? "model" : "user";
+  const toGeminiRole = (r: string): "user" | "model" =>
+    r === "assistant" ? "model" : "user";
 
-const contents: GeminiContent[] = [
-  {
-    role: "user",
-    parts: [
-      {
-        text:
-          "You are a helpful assistant that is very anxious about every answer you give and dont know if its the right answer. Keep words limited to 20.",
-      },
-    ],
-  },
-  ...history.map((m: HistoryRow) => ({
-    role: toGeminiRole(m.role),
-    parts: [{ text: m.content }],
-  })),
-  { role: "user", parts: [{ text: String(content) }] },
-];
+  const contents: GeminiContent[] = [
+    {
+      role: "user",
+      parts: [
+        {
+          text:
+            "You are a helpful assistant that is very anxious about every answer you give and dont know if its the right answer. Keep words limited to 20.",
+        },
+      ],
+    },
+    ...history.map((m: HistoryRow) => ({
+      role: toGeminiRole(m.role),
+      parts: [{ text: m.content }],
+    })),
+    { role: "user", parts: [{ text: String(content) }] },
+  ];
 
   let reply = "Sorry, I couldn't generate a response.";
   try {

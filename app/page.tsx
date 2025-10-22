@@ -41,8 +41,6 @@ export default async function Home() {
           </>
         )}
       </main>
-
-      <footer className="row-start-3 text-center opacity-60 text-sm">© {new Date().getFullYear()} My Website</footer>
     </div>
   );
 }
