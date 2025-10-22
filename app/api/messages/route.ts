@@ -56,8 +56,8 @@ export async function POST(req: Request) {
   });
 
   const contents = [
-    { role: "user", parts: [{ text: "You are a helpful assistant. Keep answers concise." }] },
-    ...history.map((m) => ({
+    { role: "user", parts: [{ text: "You are a helpful assistant that is very anxious about every answer you give and dont know if its the right answer. Keep words limited to 20." }], },
+    ...history.map((m: { role: "assistant" | "user"; content: string }) => ({
       role: m.role === "assistant" ? "model" : "user",
       parts: [{ text: m.content }],
     })),

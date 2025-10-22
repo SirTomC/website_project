@@ -31,12 +31,12 @@ export default async function Home() {
       </header>
 
       <main className="row-start-2 flex flex-col items-center gap-6 text-center">
-        <h1 className="text-3xl font-semibold tracking-tight">Welcome</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">WELLLLLLCOMMEEEE</h1>
         {!session ? (
-          <p className="opacity-70 max-w-prose">Please <b>Login</b> or <b>Register</b> to start chatting.</p>
+          <p className="opacity-70 max-w-prose"><b>Login</b> or <b>Register</b> to start chatting with AI Assitant.</p>
         ) : (
           <>
-            <p className="opacity-70">You’re signed in. Chat below 👇</p>
+            <p className="opacity-70"> Start Chatting With AI Assistant</p>
             <ChatPanel />
           </>
         )}
