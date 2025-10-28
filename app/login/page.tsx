@@ -11,18 +11,18 @@ export default function LoginPage() {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
   
-    async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
+    async function Submit(event: React.FormEvent) {
+    event.preventDefault();
     setErr(null);
     setLoading(true);
     try {
-        const res = await fetch("/api/auth/login", {
+        const request = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
         });
-        if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
+        if (!request.ok) {
+        const data = await request.json().catch(() => ({}));
         throw new Error(data.error || "Login failed");
         }
         router.push("/");
@@ -31,35 +31,18 @@ export default function LoginPage() {
         setErr(err.message);
     } finally {
         setLoading(false);
-        }
+      }
     }
-
-
   return (
     <div className="min-h-screen grid place-items-center p-6">
-      <form onSubmit={onSubmit} className="w-full max-w-sm space-y-4 border rounded-2xl p-6">
+      <form onSubmit={Submit} className="w-full max-w-sm space-y-4 border rounded-2xl p-6">
         <h1 className="text-xl font-semibold">Log in</h1>
-        <input
-          className="w-full border rounded p-2"
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-          required
-        />
-        <input
-          className="w-full border rounded p-2"
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-          required
-        />
+        <input className="w-full border rounded p-2" type="email" placeholder="Email"
+          value={email} onChange={event => setEmail(event.target.value)} required/>
+        <input className="w-full border rounded p-2" type="password" placeholder="Password"
+          value={password} onChange={event => setPassword(event.target.value)} required/>
         {err && <p className="text-red-600 text-sm">{err}</p>}
-        <button
-          className="w-full border rounded p-2 bg-black text-white dark:bg-white dark:text-black disabled:opacity-60"
-          disabled={loading}
-        >
+        <button className="w-full border rounded p-2 bg-black text-white dark:bg-white dark:text-black disabled:opacity-60" disabled={loading}>
           {loading ? "Logging in…" : "Log in"}
         </button>
         <p className="text-sm opacity-70">

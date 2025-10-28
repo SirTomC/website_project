@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 type Msg = { id: string; role: "user" | "assistant"; content: string; createdAt: string };
 type Convo = { id: string; title: string; createdAt: string };
 
-export default function ChatPanel() {
+export default function Chat() {
   const [convos, setConvos] = useState<Convo[]>([]);
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Msg[]>([]);
@@ -14,8 +14,8 @@ export default function ChatPanel() {
   const [error, setError] = useState<string | null>(null);
 
   const endRef = useRef<HTMLDivElement | null>(null);
-  const scrollToBottom = () => endRef.current?.scrollIntoView({ behavior: "smooth" });
-  useEffect(scrollToBottom, [messages]);
+  const scroll = () => endRef.current?.scrollIntoView({ behavior: "smooth" });
+  useEffect(scroll, [messages]);
 
   async function fetchConversations() {
     const res = await fetch("/api/conversations", { cache: "no-store", credentials: "same-origin" });
@@ -34,7 +34,7 @@ export default function ChatPanel() {
       if (Array.isArray(data)) {
         setMessages(data);
         setError(null);
-        scrollToBottom();
+        scroll();
       } else {
         setMessages([]);
         setError("Unexpected response from server.");
@@ -95,7 +95,7 @@ export default function ChatPanel() {
       ...prev,
       { id: `local-${Date.now()}`, role: "user", content: toSend, createdAt: new Date().toISOString() },
     ]);
-    scrollToBottom();
+    scroll();
     try {
       const res = await fetch("/api/messages", {
         method: "POST",
@@ -150,7 +150,6 @@ export default function ChatPanel() {
         {error && (
           <div className="mb-2 text-sm text-red-600 border border-red-300 bg-red-50 rounded p-2">{error}</div>
         )}
-
         <div className="flex-1 overflow-y-auto space-y-2 pr-1">
           {messages.length === 0 ? (
             <p className="opacity-60 text-center mt-10">Say Something :D</p>
@@ -175,7 +174,6 @@ export default function ChatPanel() {
           )}
           <div ref={endRef} />
         </div>
-
         <div className="mt-3 flex gap-2">
           <input
             className="flex-1 border rounded p-2"

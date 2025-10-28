@@ -9,8 +9,8 @@ const Body = z.object({
   password: z.string().min(6),
 });
 
-export async function POST(req: Request) {
-  const json = await req.json().catch(() => ({}));
+export async function POST(request: Request) {
+  const json = await request.json().catch(() => ({}));
   const parsed = Body.safeParse(json);
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.issues[0].message }, { status: 400 });

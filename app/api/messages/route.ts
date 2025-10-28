@@ -9,17 +9,14 @@ export async function GET(req: Request) {
   try {
     const session = await getSession();
     if (!session) return NextResponse.json([], { status: 200 });
-
     const { searchParams } = new URL(req.url);
     const conversationId = searchParams.get("conversationId");
     if (!conversationId) return NextResponse.json([], { status: 200 });
-
     const convo = await prisma.conversation.findFirst({
       where: { id: conversationId, userId: session.userId },
       select: { id: true },
     });
     if (!convo) return NextResponse.json([], { status: 200 });
-
     const msgs = await prisma.message.findMany({
       where: { conversationId },
       orderBy: { createdAt: "asc" },
@@ -31,44 +28,38 @@ export async function GET(req: Request) {
     return NextResponse.json([], { status: 200 });
   }
 }
+
 export async function POST(req: Request) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
   const { conversationId, content } = await req.json().catch(() => ({} as any));
   if (!conversationId || !content) {
     return NextResponse.json({ error: "Invalid body" }, { status: 400 });
   }
-
   const convo = await prisma.conversation.findUnique({ where: { id: conversationId } });
   if (!convo || convo.userId !== session.userId) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
-
   await prisma.message.create({
     data: { conversationId, role: "user", content: String(content) },
   });
-
   const history = await prisma.message.findMany({
     where: { conversationId },
     orderBy: { createdAt: "asc" },
     select: { role: true, content: true },
     take: 12,
   });
-
   type HistoryRow = { role: string; content: string };
   type GeminiContent = { role: "user" | "model"; parts: { text: string }[] };
-
   const toGeminiRole = (r: string): "user" | "model" =>
     r === "assistant" ? "model" : "user";
-
   const contents: GeminiContent[] = [
     {
       role: "user",
       parts: [
         {
           text:
-            "You are a helpful assistant that is very anxious about every answer you give and dont know if its the right answer. Keep words limited to 20.",
+            "You are a helpful assistant that is very anxious about every answer you give. Keep words limited to 20.",
         },
       ],
     },
@@ -78,15 +69,12 @@ export async function POST(req: Request) {
     })),
     { role: "user", parts: [{ text: String(content) }] },
   ];
-
   let reply = "Sorry, I couldn't generate a response.";
   try {
     const apiKey = process.env.GEMINI_API_KEY ?? process.env.GEMINI_API;
     if (!apiKey) throw new Error("Missing GEMINI_API_KEY/GEMINI_API");
-
     const modelId = process.env.GEMINI_MODEL ?? "gemini-2.0-flash";
     const url = `https://generativelanguage.googleapis.com/v1/models/${modelId}:generateContent?key=${apiKey}`;
-
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 8000);
     try {
@@ -108,10 +96,8 @@ export async function POST(req: Request) {
   } catch (err) {
     console.error("Gemini fatal error:", err);
   }
-
   await prisma.message.create({
     data: { conversationId, role: "assistant", content: reply },
   });
-
   return NextResponse.json({ ok: true }, { status: 201 });
 }
